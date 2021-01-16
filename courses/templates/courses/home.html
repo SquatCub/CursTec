@@ -1,0 +1,13 @@
+{% load static %}
+
+<h1 class="display-4">Welcome to CursTec</h1>
+<h2 class="display-6">Learn for you, teach for others</h2>
+<div class="text-center">
+    <img class="card-img" src="https://pineapplesupport.org/wp-content/uploads/2020/04/learning.jpg" alt="background">    
+</div>
+<h4 class="display-6">Learn about you want, if you are good you can create your own courses.</h4>
+<hr>
+<h3 class="display-4">Explore our categories</h3>
+{% for category in categories %}
+    <a class="text-xl-left" href="{% url 'category' category.id %}">{{category.name}}</a><br>
+{% endfor %}

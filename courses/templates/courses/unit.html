@@ -1,0 +1,66 @@
+{% load static %}
+
+    <h1 class="display-6">{{course.title}}</h1>
+    {% for unit in units %}
+        <li class="list-group-item"><a href="{% url 'unit' course.id unit.id %}">{{unit.title}}</a></li>
+    {% endfor %}
+    {% if user.is_authenticated and user == course.user %}
+    <br>
+    <form action="{% url 'createUnit' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Add a unit</label>
+            <input type="hidden" name="id" value="{{course.id}}">
+            <input type="hidden" name="uid" value="{{current.id}}">
+            <input type="hidden" name="type" value="unit">
+            <input type="text" class="form-control" id="name" placeholder="Unit name.." name="name">
+        </div>
+        <button id="edit_unit" data-id="{{course.id}}" class='edit_unit btn btn-sm btn-primary'>Add</button>
+    </form>
+    {% endif %}
+
+    <hr>
+    <div id="unit-form"></div>
+    <h4 id="title">{{current.title}}</h4>
+    {% if user.is_authenticated and user == course.user %}
+        <button id="edit-unit" data-id="{{current.id}}" class='edit-unit btn btn-sm btn-warning'>Edit</button>
+        <button data-toggle="modal" data-target="#exampleModal" class='delete btn btn-sm btn-danger'>Delete</button>
+
+        <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <span><img src="https://lh3.googleusercontent.com/proxy/fOn2S5YYAHTng2nmtE36xHuG-K4TE_FfifteBIIrSPKgDwO5xPL_DiZOu0gnCh_Qr_ZqVIeMqMdalJNdhG9zXxUZA0o8iTAvvyvywDwwZyxWAp7bZMiJ8aPQi561H80H2Wjh" width="23" alt="delete"></span><h5 class="modal-title" id="exampleModalLabel">  Delete Unit</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete this unit?
+              This action can't be reverted
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+              <form action="{% url 'deleteUnit' %}" method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="id" value="{{current.id}}">
+                  <input type="hidden" name="course-id" value="{{course.id}}">
+                <button type="submit" class="delCourse btn btn-danger">Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    <p id="desc" class="text-muted">{{current.description}}</p>
+    <p id="notes">{{current.notes}}</p>
+    <p id="vid" class="d-none">{{current.video}}</p>
+    <div class="text-center">
+        <iframe id="frame" width="560" height="315" src="https://www.youtube.com/embed/{{current.video}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    
+    
+    
+    
+    

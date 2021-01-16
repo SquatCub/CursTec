@@ -1,0 +1,29 @@
+{% load static %}
+    <h1 class="display-3">{{course.title}}</h1><button onclick="btnLike()" id="like" data-id="{{course.id}}" class='like btn btn-sm btn-warning'>Unlike</button>
+    <p class="text-muted">Category: {{course.category.name}}</p>
+    <div class="d-flex justify-content-between">
+        <h5 id="enroll-count" class="text-muted">Users enrolled: {{course.enrolled.all.count}}</h5>
+        <h5 class="text-muted">Date: {{course.date}}</h5>
+    </div>
+    <img src="{{course.img}}" class="img-fluid" alt="{{course.title}}_{{course.id}}"><br><br>
+
+    {% if user.is_authenticated and user != course.user %}
+        <h1>This is not your course</h1>
+    {% elif user.is_authenticated %}
+    {% if request.user in course.like.all %}
+        <button onclick="btnLike()" id="like" data-id="{{course.id}}" class='like btn btn-sm btn-warning'>Unlike</button><span id="likes-count"> Liked by: {{course.likes}}</span><br><br>
+    {% else %}
+        <button onclick="btnLike()" id="like" data-id="{{course.id}}" class='like btn btn-sm btn-primary'>Like</button><span id="likes-count"> Liked by: {{course.likes}}</span><br><br>
+    {% endif %}
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-lg btn-success">Sign In to Enroll</a>
+    {% endif %}
+    <hr>
+    <h2>{{course.description}}</h2>
+    <br><br>
+    <h1>What's in the course?</h1>
+    <ul class="list-group list-group-flush">
+        {% for unit in units %}
+        <li class="list-group-item"><a href="{% url 'unit' course.title unit.title %}">{{unit.title}}</a></li>
+        {% endfor %}
+    </ul>

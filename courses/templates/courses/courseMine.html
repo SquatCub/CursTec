@@ -1,0 +1,27 @@
+{% load static %}
+<h2 class="text-muted">In this section are listed your own courses. You can see and edit all of them.</h2>
+{% for course in courses %}
+    <div class="course-lg card text-white">
+        <img class="card-img" src="{{ course.img }}" alt="Card image">
+        <div class="card-img-overlay">
+            <a href="{% url 'course' course.id %}" class="">
+                <h1 class="card-title text-dark bg-white">{{ course.title }}</h1>
+                <h2 class="card-text text-dark bg-white">{{ course.description }}</h2>
+                <p class="card-text text-dark bg-white">{{ course.date }}</p>
+            </a>
+            <br>
+            
+            <a class="btn btn-lg btn-warning text-white" href="{% url 'course' course.id %}">Edit</a>
+        </div>
+    </div>
+    <div class="course-sm card">
+        <img class="card-img-top" src="{{ course.img }}" alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title">{{ course.title }}</h5>
+          <p class="card-text">{{ course.description }}</p>
+          <a class="btn btn-lg btn-warning text-white" href="{% url 'course' course.id %}">Edit</a>
+        </div>
+      </div>
+      <br>
+    
+{% endfor %}

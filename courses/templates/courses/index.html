@@ -1,0 +1,38 @@
+{% extends "courses/layout.html" %}
+{% load static %}
+
+
+{% block body %}
+    {% if type == 'explore' %}
+        <h1>All courses</h1>
+        <hr>
+        {% include "courses/courseMin.html" with courses=page_courses %}
+    {% elif type == 'enrolled' %}
+        <h1>Enrolled</h1>
+        <hr>
+        {% include "courses/courseMin.html" with courses=page_courses %}
+    {% elif type == 'category' %}
+        <h1>Category: {{category.name}}</h1>
+        <hr>
+        {% include "courses/courseMin.html" with courses=page_courses %}
+    {% elif type == 'teach' %}
+        <h1>Be a teacher</h1>
+        <hr>
+        {% include "courses/teach.html" %}
+    {% elif type == 'mine' %}
+        <h1>My courses</h1>
+        <hr>
+        {% include "courses/courseMine.html" %}
+    {% elif type == 'one' %}
+        <h1>Edit Course</h1>
+        <hr>
+        {% include "courses/courseView.html" %}
+    {% elif type == 'course' %}
+        {% include "courses/course.html" %}
+    {% elif type == 'unit' %}
+        {% include "courses/unit.html" %}
+    {% else %}
+        {% include "courses/home.html" %}
+    {% endif %}
+        
+{% endblock %}

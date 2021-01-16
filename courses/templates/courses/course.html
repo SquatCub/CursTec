@@ -1,0 +1,103 @@
+{% load static %}
+
+    <div class="title display-3" id="title">{{course.title}}</div>
+
+    {% if user.is_authenticated and user == course.user %}
+    <div class="text-right">
+        <button id="edit" data-id="{{course.id}}" class='edit btn btn-sm btn-warning'>Edit</button>
+        <button data-toggle="modal" data-target="#exampleModal" class='delete btn btn-sm btn-danger'>Delete</button>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <span><img src="https://lh3.googleusercontent.com/proxy/fOn2S5YYAHTng2nmtE36xHuG-K4TE_FfifteBIIrSPKgDwO5xPL_DiZOu0gnCh_Qr_ZqVIeMqMdalJNdhG9zXxUZA0o8iTAvvyvywDwwZyxWAp7bZMiJ8aPQi561H80H2Wjh" width="23" alt="delete"></span><h5 class="modal-title" id="exampleModalLabel">  Delete course</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete this course?
+              This action can't be reverted
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+              <form action="{% url 'deleteCourse' %}" method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="id" value="{{course.id}}">
+                <button type="submit" class="delCourse btn btn-danger">Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <p class="text-muted">Category: {{course.category.name}}</p>
+    <div class="d-flex justify-content-between">
+        <h5 id="enroll-count" class="text-muted">Users enrolled: {{course.enrolled.all.count}}</h5>
+        <h5 class="text-muted">Date: {{course.date}}</h5>
+    </div>
+    <img id="img" src="{{course.img}}" class="img-fluid" alt="{{course.title}}_{{course.id}}"><br><br>
+    
+    {% if user.is_authenticated and user != course.user %}
+        {% if request.user in course.enrolled.all %}
+            <button onclick="btnEnroll()" id="enroll" data-id="{{course.id}}" class='enroll btn btn-info btn-lg'>Unroll</button>
+        {% else %}
+            <button onclick="btnEnroll()" id="enroll" data-id="{{course.id}}" class='enroll btn btn-success btn-lg'>Enroll Me</button>
+        {% endif %}
+        {% if request.user in course.like.all %}
+          <button onclick="btnLike()" id="like" data-id="{{course.id}}" class='like btn btn-sm btn-warning'>Unlike</button><span id="likes-count"> Liked by: {{course.likes}}</span><br><br>
+        {% else %}
+            <button onclick="btnLike()" id="like" data-id="{{course.id}}" class='like btn btn-sm btn-primary'>Like</button><span id="likes-count"> Liked by: {{course.likes}}</span><br><br>
+        {% endif %}
+    {% elif user.is_authenticated %}
+      {% if request.user in course.like.all %}
+          <button onclick="btnLike()" id="like" data-id="{{course.id}}" class='like btn btn-sm btn-warning'>Unlike</button><span id="likes-count"> Liked by: {{course.likes}}</span><br><br>
+      {% else %}
+          <button onclick="btnLike()" id="like" data-id="{{course.id}}" class='like btn btn-sm btn-primary'>Like</button><span id="likes-count"> Liked by: {{course.likes}}</span><br><br>
+      {% endif %}
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-lg btn-success">Sign In to Enroll</a>
+    {% endif %}
+    <hr>
+    <div id="desc" class="h2">{{course.description}}</div>
+    <br><br>
+    <h1>What's in the course?</h1>
+
+
+    
+    <ul class="list-group list-group-flush">
+        {% for unit in units %}
+        <li class="list-group-item"><a href="{% url 'unit' course.id unit.id %}">{{unit.title}}</a></li>
+        {% endfor %}
+    </ul>
+    <br>
+    {% if user.is_authenticated and user == course.user %}
+    <form action="{% url 'createUnit' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Add a unit</label>
+            <input type="hidden" name="id" value="{{course.id}}">
+            <input type="hidden" name="type" value="course">
+            <input type="text" class="form-control" id="name" placeholder="Unit name.." name="name">
+        </div>
+        <button id="edit_unit" data-id="{{course.id}}" class='edit_unit btn btn-sm btn-primary'>Add</button>
+    </form>
+    {% endif %}
+    <br>
+    <h1>Comments</h1>
+    {% if user.is_authenticated %}
+    <form action="{% url 'comment' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" value="{{course.id}}" name="course">
+        <textarea name="content" style="overflow: hidden; resize: none"
+        oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
+        class="form-control"></textarea><br>
+        <button type="submit" class="btn btn-sm btn-success">Comment</button>
+    </form><br>
+    {% endif %}
+    {% for comment in comments %}
+        {{comment.content}}<span class="text-muted">  {{comment.user}}</span><hr>
+    {% endfor %}

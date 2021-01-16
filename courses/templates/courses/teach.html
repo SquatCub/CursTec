@@ -1,0 +1,33 @@
+{% load static %}
+    <h2 class="text-muted">In this section you will be able to submit your own courses, be sure that your material is by your own property and make it clean and worthy.</h2>
+    <div class="text-right">
+        <a class="btn btn-lg btn-dark" href="{% url 'mine' %}">Your courses here</a>
+
+    </div>
+    <hr>
+    <form action="{% url 'create' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="name">Course Title</label>
+          <input type="text" class="form-control" id="name" placeholder="Title.." name="name">
+        </div>
+        <div class="form-group">
+            <label for="desc">Description</label>
+            <textarea class="form-control" id="desc" rows="3" name="desc"></textarea>
+            <small id="emailHelp" class="form-text text-muted">Be specific and write about details.</small>
+          </div>
+
+        <label for="category">Category</label>
+        <select class="form-control" id="category" name="category">
+            {% for category in categories %}
+            <option value="{{category.id}}">{{category.title}}</option>
+            {% endfor %}
+        </select><br>
+
+        <div class="form-group">
+            <label for="img">Image url</label>
+            <input type="text" class="form-control" id="img" placeholder="Image Url (optional)" name="img">
+        </div>
+        <p class="text-muted">Once you create your couse, you will be able to add content.</p>
+        <button type="submit" class="btn btn-primary">Create Course</button> 
+      </form>
